@@ -8,26 +8,27 @@
 <body>
   <h1>Vender Produto</h1>
 
-  <input type="text" id="titulo" placeholder="Título do produto"><br>
-  <textarea id="descricao" placeholder="Descrição"></textarea><br>
-  <input type="text" id="imagem" placeholder="URL da imagem (opcional)"><br>
-  <button onclick="enviarProduto()">Enviar Produto</button>
+  <input type="text" id="nome" placeholder="Nome do produto"><br>
+  <input type="text" id="descricao" placeholder="Descrição"><br>
+  <input type="number" id="preco" placeholder="Preço"><br>
+  <input type="file" id="imagem" accept="image/*"><br>
+  <button id="btnVender">Vender</button>
 
   <p id="mensagem"></p>
   <a href="index.html">Voltar</a>
 
-  <!-- Firebase SDKs compatíveis -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
-  <!-- Firebase Config -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
       authDomain: "loja-comunitaria-2568b.firebaseapp.com",
       projectId: "loja-comunitaria-2568b",
-      storageBucket: "loja-comunitaria-2568b.firebasestorage.app",
+      storageBucket: "loja-comunitaria-2568b.appspot.com",
       messagingSenderId: "190744887053",
       appId: "1:190744887053:web:60eb0f376720a00b48ba44"
     };
@@ -35,29 +36,57 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
-    function enviarProduto() {
-      const titulo = document.getElementById("titulo").value;
-      const descricao = document.getElementById("descricao").value;
-      const imagem = document.getElementById("imagem").value;
-
-      const user = auth.currentUser;
-
+    // Garante que o usuário esteja logado
+    auth.onAuthStateChanged((user) => {
       if (!user) {
-        document.getElementById("mensagem").innerText = "Você precisa estar logado.";
+        document.body.innerHTML = '<p>Você precisa estar logado para vender.</p><a href="login.html">Entrar</a>';
         return;
       }
 
-      db.collection("produtos").add({
-        titulo,
-        descricao,
-        imagem,
-        vendedor: user.email,
-        data: new Date()
+      // Só ativa o botão se o usuário estiver logado
+      document.getElementById("btnVender").addEventListener("click", () => {
+        venderProduto(user);
+      });
+    });
+
+    function venderProduto(user) {
+      const nome = document.getElementById("nome").value.trim();
+      const descricao = document.getElementById("descricao").value.trim();
+      const preco = parseFloat(document.getElementById("preco").value);
+      const imagem = document.getElementById("imagem").files[0];
+      const mensagem = document.getElementById("mensagem");
+
+      if (!nome || !descricao || !preco || isNaN(preco) || !imagem) {
+        mensagem.innerText = "Preencha todos os campos corretamente e selecione uma imagem.";
+        return;
+      }
+
+      mensagem.innerText = "Enviando...";
+
+      const nomeImagem = `imagens/${Date.now()}_${imagem.name}`;
+      const storageRef = storage.ref(nomeImagem);
+
+      storageRef.put(imagem).then(snapshot => {
+        return snapshot.ref.getDownloadURL();
+      }).then(urlImagem => {
+        return db.collection("produtos").add({
+          nome,
+          descricao,
+          preco,
+          imagemUrl: urlImagem,
+          emailUsuario: user.email,
+          data: new Date()
+        });
       }).then(() => {
-        document.getElementById("mensagem").innerText = "Produto enviado com sucesso!";
+        mensagem.innerText = "Produto cadastrado com sucesso!";
+        document.getElementById("nome").value = "";
+        document.getElementById("descricao").value = "";
+        document.getElementById("preco").value = "";
+        document.getElementById("imagem").value = "";
       }).catch((error) => {
-        document.getElementById("mensagem").innerText = error.message;
+        mensagem.innerText = "Erro ao cadastrar: " + error.message;
       });
     }
   </script>

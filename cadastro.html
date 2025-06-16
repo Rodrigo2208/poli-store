@@ -2,15 +2,15 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title>Cadastrar</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Entrar</h1>
+  <h1>Cadastrar Conta</h1>
 
-  <input type="email" id="email-login" placeholder="Email"><br>
-  <input type="password" id="senha-login" placeholder="Senha"><br>
-  <button onclick="entrar()">Entrar</button>
+  <input type="email" id="email-cadastro" placeholder="Email"><br>
+  <input type="password" id="senha-cadastro" placeholder="Senha"><br>
+  <button onclick="cadastrar()">Cadastrar</button>
 
   <p id="mensagem"></p>
   <a href="index.html">Voltar</a>
@@ -30,12 +30,12 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    function entrar() {
-      const email = document.getElementById("email-login").value;
-      const senha = document.getElementById("senha-login").value;
-      auth.signInWithEmailAndPassword(email, senha)
+    function cadastrar() {
+      const email = document.getElementById("email-cadastro").value;
+      const senha = document.getElementById("senha-cadastro").value;
+      auth.createUserWithEmailAndPassword(email, senha)
         .then(() => {
-          document.getElementById("mensagem").innerText = "Login bem-sucedido!";
+          document.getElementById("mensagem").innerText = "Cadastro realizado com sucesso!";
         })
         .catch((error) => {
           document.getElementById("mensagem").innerText = error.message;

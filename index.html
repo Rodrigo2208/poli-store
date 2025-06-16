@@ -6,46 +6,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Produtos à venda</h1>
-  <div id="produtos"></div>
-  <a href="login.html">Entrar / Cadastrar</a> |
-  <a href="vender.html">Vender algo</a>
+  <h1>Bem-vindo à Loja Comunitária</h1>
 
-  <!-- Firebase SDKs compatíveis -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <p>Veja produtos à venda ou cadastre-se para vender os seus!</p>
 
-  <!-- Firebase Configuração -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
-      authDomain: "loja-comunitaria-2568b.firebaseapp.com",
-      projectId: "loja-comunitaria-2568b",
-      storageBucket: "loja-comunitaria-2568b.firebasestorage.app",
-      messagingSenderId: "190744887053",
-      appId: "1:190744887053:web:60eb0f376720a00b48ba44"
-    };
+  <div style="margin-bottom: 20px;">
+    <a href="login.html"><button>Entrar</button></a>
+  </div>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  <div style="margin-bottom: 20px;">
+    <a href="cadastro.html"><button>Cadastrar</button></a>
+  </div>
 
-    db.collection("produtos").orderBy("data", "desc").onSnapshot((snapshot) => {
-      const produtos = document.getElementById("produtos");
-      produtos.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const p = doc.data();
-        produtos.innerHTML += `
-          <div class="produto">
-            <h3>${p.titulo}</h3>
-            ${p.imagem ? `<img src="${p.imagem}" width="100%">` : ""}
-            <p>${p.descricao}</p>
-            <small>Vendedor: ${p.vendedor}</small>
-          </div>
-        `;
-      });
-    });
-  </script>
+  <div style="margin-bottom: 20px;">
+    <a href="vender.html"><button>Vender Produto</button></a>
+  </div>
+
+  <div>
+    <a href="produtos.html"><button>Ver Produtos</button></a>
+  </div>
 </body>
 </html>
