@@ -1,0 +1,34 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+input, textarea, button {
+  display: block;
+  margin: 10px 0;
+  padding: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+#produtos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.produto {
+  background: white;
+  padding: 10px;
+  border: 1px solid #ddd;
+  width: 200px;
+}
+.produto img {
+  max-width: 100%;
+  height: auto;
+}
