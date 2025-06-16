@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login / Cadastro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Entrar ou Cadastrar</h1>
+
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="senha" placeholder="Senha"><br>
+  <button onclick="entrar()">Entrar</button>
+  <button onclick="cadastrar()">Cadastrar</button>
+
+  <p id="mensagem"></p>
+  <a href="index.html">Voltar</a>
+
+  <!-- Firebase SDKs compatíveis -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
+      authDomain: "loja-comunitaria-2568b.firebaseapp.com",
+      projectId: "loja-comunitaria-2568b",
+      storageBucket: "loja-comunitaria-2568b.firebasestorage.app",
+      messagingSenderId: "190744887053",
+      appId: "1:190744887053:web:60eb0f376720a00b48ba44"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function entrar() {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      auth.signInWithEmailAndPassword(email, senha)
+        .then(() => {
+          document.getElementById("mensagem").innerText = "Login bem-sucedido!";
+        })
+        .catch((error) => {
+          document.getElementById("mensagem").innerText = error.message;
+        });
+    }
+
+    function cadastrar() {
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      auth.createUserWithEmailAndPassword(email, senha)
+        .then(() => {
+          document.getElementById("mensagem").innerText = "Cadastro realizado!";
+        })
+        .catch((error) => {
+          document.getElementById("mensagem").innerText = error.message;
+        });
+    }
+  </script>
+</body>
+</html>
