@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vender Produto</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Vender Produto</h1>
+
+  <input type="text" id="titulo" placeholder="Título do produto"><br>
+  <textarea id="descricao" placeholder="Descrição"></textarea><br>
+  <input type="text" id="imagem" placeholder="URL da imagem (opcional)"><br>
+  <button onclick="enviarProduto()">Enviar Produto</button>
+
+  <p id="mensagem"></p>
+  <a href="index.html">Voltar</a>
+
+  <!-- Firebase SDKs compatíveis -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
+      authDomain: "loja-comunitaria-2568b.firebaseapp.com",
+      projectId: "loja-comunitaria-2568b",
+      storageBucket: "loja-comunitaria-2568b.firebasestorage.app",
+      messagingSenderId: "190744887053",
+      appId: "1:190744887053:web:60eb0f376720a00b48ba44"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function enviarProduto() {
+      const titulo = document.getElementById("titulo").value;
+      const descricao = document.getElementById("descricao").value;
+      const imagem = document.getElementById("imagem").value;
+
+      const user = auth.currentUser;
+
+      if (!user) {
+        document.getElementById("mensagem").innerText = "Você precisa estar logado.";
+        return;
+      }
+
+      db.collection("produtos").add({
+        titulo,
+        descricao,
+        imagem,
+        vendedor: user.email,
+        data: new Date()
+      }).then(() => {
+        document.getElementById("mensagem").innerText = "Produto enviado com sucesso!";
+      }).catch((error) => {
+        document.getElementById("mensagem").innerText = error.message;
+      });
+    }
+  </script>
+</body>
+</html>
