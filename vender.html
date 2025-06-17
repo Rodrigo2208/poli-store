@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Vender Produto</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main>
       <h1>Vender Produto</h1>
       <form id="vendaForm">
-        <input type="text" id="nome" placeholder="Nome do produto" required><br>
+        <input type="text" id="titulo" placeholder="Título do produto" required><br>
         <input type="number" id="preco" placeholder="Preço" required><br>
         <textarea id="descricao" placeholder="Descrição do produto" required></textarea><br>
         <input type="file" id="imagem" accept="image/*" required><br>
@@ -37,7 +37,6 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Função para fazer upload da imagem no ImgBB
     async function uploadImagemParaImgBB(file) {
       const apiKey = "609de06a58faae929e0c98224957cc60";
       const formData = new FormData();
@@ -56,7 +55,6 @@
       }
     }
 
-    // Verifica se usuário está logado e envia o produto
     onAuthStateChanged(auth, user => {
       if (!user) {
         alert("Você precisa estar logado para vender produtos.");
@@ -64,12 +62,14 @@
         return;
       }
 
-      document.getElementById("vendaForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const status = document.getElementById("status");
-        status.textContent = "Enviando...";
+      const form = document.getElementById("vendaForm");
+      const statusDiv = document.getElementById("status");
 
-        const nome = document.getElementById("nome").value;
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        statusDiv.textContent = "Enviando...";
+
+        const titulo = document.getElementById("titulo").value;
         const preco = parseFloat(document.getElementById("preco").value);
         const descricao = document.getElementById("descricao").value;
         const imagemFile = document.getElementById("imagem").files[0];
@@ -78,7 +78,7 @@
           const urlImagem = await uploadImagemParaImgBB(imagemFile);
 
           await addDoc(collection(db, "produtos"), {
-            nome,
+            titulo,            // campo correto
             preco,
             descricao,
             imagem: urlImagem,
@@ -86,11 +86,12 @@
             criadoEm: new Date()
           });
 
-          status.textContent = "Produto enviado com sucesso!";
+          statusDiv.textContent = "Produto enviado com sucesso!";
+          form.reset();
           setTimeout(() => window.location.href = "produtos.html", 1500);
         } catch (error) {
           console.error("Erro ao enviar produto:", error);
-          status.textContent = "Erro ao enviar produto. Tente novamente.";
+          statusDiv.textContent = "Erro ao enviar produto. Tente novamente.";
         }
       });
     });
