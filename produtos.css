@@ -12,8 +12,8 @@ body {
 
 main {
   background-image: linear-gradient(to top, #cbe5cb, #0d9030);
-  max-width: 500px;
-  min-width: 270px;
+  max-width: 800px;
+  min-width:370px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -57,4 +57,12 @@ main.produtos {
   transform: translate(-50%, 30%);
   padding: 30px;
   border-radius: 6px;
+}
+
+img {
+    max-width: 150px;
+}
+div.produtos {
+    background-color: #f4f4f4;
+    border-radius: 6px;
 }
