@@ -52,3 +52,15 @@ input {
     border: 0px;
     width: 100%;
 }
+
+a {
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #040752;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+a:hover {
+  background-color: #0056b3;
+}
