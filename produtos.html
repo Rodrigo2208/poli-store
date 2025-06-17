@@ -1,48 +1,61 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Produtos</title>
+  <meta charset="UTF-8" />
+  <title>Produtos à Venda</title>
   <link rel="stylesheet" href="produtos.css">
 </head>
 <body>
-  <main class="produtos">
+  <main>
     <h1>Produtos à Venda</h1>
-    <div id="produtos" class="produtos"></div>
+    <a href="carrinho.html">🛒 Ver Carrinho</a>
+    <div id="produtos"></div>
   </main>
 
   <script type="module">
-    import { db } from './firebaseConfig.js';
-    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
+      authDomain: "loja-comunitaria-2568b.firebaseapp.com",
+      projectId: "loja-comunitaria-2568b",
+      storageBucket: "loja-comunitaria-2568b.appspot.com",
+      messagingSenderId: "190744887053",
+      appId: "1:190744887053:web:60eb0f376720a00b48ba44"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     const container = document.getElementById('produtos');
 
     async function carregarProdutos() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "produtos"));
-        querySnapshot.forEach(doc => {
-          const produto = doc.data();
+      const querySnapshot = await getDocs(collection(db, "produtos"));
+      querySnapshot.forEach(doc => {
+        const produto = doc.data();
+        const item = document.createElement('div');
+        item.classList.add("produto");
 
-          // Verifica se o preço existe e é um número
-          const precoFormatado = produto.preco !== undefined && !isNaN(produto.preco) 
-            ? produto.preco.toFixed(2) 
-            : "0.00";
+        item.innerHTML = `
+          <h2>${produto.titulo}</h2>
+          <img src="${produto.imagem}" alt="${produto.titulo}" width="200"><br>
+          <p>${produto.descricao}</p>
+          <strong>R$ ${produto.preco.toFixed(2)}</strong><br>
+          <button onclick='adicionarAoCarrinho(${JSON.stringify(produto)})'>Comprar</button>
+          <hr>
+        `;
 
-          const div = document.createElement('div');
-          div.innerHTML = `
-            <h2>${produto.titulo || "Sem título"}</h2>
-            <img src="${produto.imagem || ''}" alt="${produto.titulo || ''}" width="200"><br>
-            <p>${produto.descricao || "Sem descrição"}</p>
-            <strong>R$ ${precoFormatado}</strong>
-            <hr>
-          `;
-          container.appendChild(div);
-        });
-      } catch (error) {
-        console.error("Erro ao carregar produtos:", error);
-        container.innerHTML = "<p>Erro ao carregar produtos. Recarregue a página.</p>";
-      }
+        container.appendChild(item);
+      });
     }
+
+    window.adicionarAoCarrinho = function(produto) {
+      const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+      carrinho.push(produto);
+      localStorage.setItem("carrinho", JSON.stringify(carrinho));
+      alert("Produto adicionado ao carrinho!");
+    };
 
     carregarProdutos();
   </script>
