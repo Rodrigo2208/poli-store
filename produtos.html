@@ -1,55 +1,37 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Produtos à Venda</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Produtos</title>
 </head>
 <body>
   <h1>Produtos à Venda</h1>
-  <div id="produtos-container"></div>
-  <a href="index.html">Voltar</a>
+  <div id="produtos"></div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script type="module">
+    import { db } from './firebaseConfig.js';
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
-      authDomain: "loja-comunitaria-2568b.firebaseapp.com",
-      projectId: "loja-comunitaria-2568b",
-      storageBucket: "loja-comunitaria-2568b.appspot.com",
-      messagingSenderId: "190744887053",
-      appId: "1:190744887053:web:60eb0f376720a00b48ba44"
-    };
+    const container = document.getElementById('produtos');
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    const container = document.getElementById("produtos-container");
-
-    db.collection("produtos").orderBy("data", "desc").get().then((querySnapshot) => {
-      if (querySnapshot.empty) {
-        container.innerHTML = "<p>Nenhum produto cadastrado ainda.</p>";
-        return;
-      }
-
-      querySnapshot.forEach((doc) => {
+    async function carregarProdutos() {
+      const querySnapshot = await getDocs(collection(db, "produtos"));
+      querySnapshot.forEach(doc => {
         const produto = doc.data();
-        const div = document.createElement("div");
-        div.style.border = "1px solid #ccc";
-        div.style.padding = "10px";
-        div.style.marginBottom = "10px";
+
+        const div = document.createElement('div');
         div.innerHTML = `
-          <h3>${produto.nome}</h3>
-          <p>Descrição: ${produto.descricao}</p>
-          <p>Preço: R$ ${produto.preco.toFixed(2)}</p>
-          <p>Vendedor: ${produto.emailUsuario}</p>
-          ${produto.imagemUrl ? `<img src="${produto.imagemUrl}" alt="Imagem do produto" style="max-width: 300px;">` : ''}
+          <h2>${produto.titulo}</h2>
+          <img src="${produto.imagem}" alt="${produto.titulo}" width="200"><br>
+          <p>${produto.descricao}</p>
+          <strong>R$ ${produto.preco.toFixed(2)}</strong>
+          <hr>
         `;
         container.appendChild(div);
       });
-    });
+    }
+
+    carregarProdutos();
   </script>
 </body>
 </html>
