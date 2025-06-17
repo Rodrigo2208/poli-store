@@ -11,7 +11,7 @@ body {
 }
 
 main {
-  background-image: linear-gradient(to top, #cbe5cb, #0d9030);
+  background-image: linear-gradient(to top, #cbe5cb, #0b7728);
   max-width: 500px;
   min-width: 270px;
   position: absolute;
@@ -46,4 +46,9 @@ button:hover {
 }
 .container {
   text-align: center;
+}
+
+input {
+    border: 0px;
+    width: 100%;
 }
