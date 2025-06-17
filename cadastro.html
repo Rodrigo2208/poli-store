@@ -1,46 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Cadastrar</title>
-  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Cadastrar Conta</h1>
+  <h1>Criar Conta</h1>
+  <form id="form-cadastro">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="senha" placeholder="Senha" required><br>
+    <button type="submit">Cadastrar</button>
+  </form>
+  <div id="msg"></div>
 
-  <input type="email" id="email-cadastro" placeholder="Email"><br>
-  <input type="password" id="senha-cadastro" placeholder="Senha"><br>
-  <button onclick="cadastrar()">Cadastrar</button>
+  <script type="module">
+    import { auth } from './firebaseConfig.js';
+    import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <p id="mensagem"></p>
-  <a href="index.html">Voltar</a>
+    document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhgpnRaPnTocDl4_LHJetdSQ-I_YKkO28",
-      authDomain: "loja-comunitaria-2568b.firebaseapp.com",
-      projectId: "loja-comunitaria-2568b",
-      storageBucket: "loja-comunitaria-2568b.firebasestorage.app",
-      messagingSenderId: "190744887053",
-      appId: "1:190744887053:web:60eb0f376720a00b48ba44"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    function cadastrar() {
-      const email = document.getElementById("email-cadastro").value;
-      const senha = document.getElementById("senha-cadastro").value;
-      auth.createUserWithEmailAndPassword(email, senha)
-        .then(() => {
-          document.getElementById("mensagem").innerText = "Cadastro realizado com sucesso!";
-        })
-        .catch((error) => {
-          document.getElementById("mensagem").innerText = error.message;
-        });
-    }
+      try {
+        await createUserWithEmailAndPassword(auth, email, senha);
+        document.getElementById('msg').textContent = "Conta criada com sucesso!";
+        window.location.href = "vender.html";
+      } catch (error) {
+        document.getElementById('msg').textContent = error.message;
+      }
+    });
   </script>
 </body>
 </html>
